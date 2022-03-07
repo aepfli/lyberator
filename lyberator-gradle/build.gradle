@@ -1,0 +1,28 @@
+plugins {
+	id "java-gradle-plugin"
+	id "groovy"
+	id "maven-publish"
+}
+
+gradlePlugin {
+	plugins {
+		lyberatorPlugin {
+			id = 'LyberatorPlugin'
+			displayName = '<short displayable name for plugin>'
+			description = '<Good human-readable description of what your plugin is about>'
+			implementationClass = 'at.schrottner.lyberator.packaging.LyberatorPlugin'
+		}
+		extensionLyberatorPlugin {
+			id = 'ExtensionLyberatorPlugin'
+			displayName = '<short displayable name for plugin>'
+			description = '<Good human-readable description of what your plugin is about>'
+			implementationClass = 'at.schrottner.lyberator.packaging.ExtensionLyberatorPlugin'
+		}
+		resolverPlugin {
+			id = 'resolverPlugin'
+			displayName = '<short displayable name for plugin>'
+			description = '<Good human-readable description of what your plugin is about>'
+			implementationClass = 'at.schrottner.lyberator.resolving.ResolverPlugin'
+		}
+	}
+}
