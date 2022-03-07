@@ -1,0 +1,6 @@
+
+rootProject.name = "Lyberator"
+
+includeBuild "lyberator-gradle"
+includeBuild "testing/extraction"
+includeBuild "testing/usage"
