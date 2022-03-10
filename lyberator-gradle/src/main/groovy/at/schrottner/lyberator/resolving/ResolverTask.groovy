@@ -1,7 +1,6 @@
 package at.schrottner.lyberator.resolving
 
 import groovy.json.JsonBuilder
-import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
@@ -40,7 +39,7 @@ class ResolverTask extends DefaultTask {
 		}
 	}
 	@OutputFile
-	def getDependencies () {
+	def getDependencyStore() {
 		project.file("$project.buildDir/commerce/extensions.json")
 	}
 
@@ -73,14 +72,14 @@ class ResolverTask extends DefaultTask {
 
 		Map<String, CommerceDep> oldExt
 
-		if(dependencies.exists()) {
-			oldExt = new JsonSlurper().parse(dependencies) as Map<String, CommerceDep>
-			dependencies.delete()
+		if(dependencyStore.exists()) {
+			oldExt = new JsonSlurper().parse(dependencyStore) as Map<String, CommerceDep>
+			dependencyStore.delete()
 		} else {
 			oldExt = [:]
 		}
 
-		Map<String, CommerceDep> pathLookUp = configPoms.resolvedConfiguration.getResolvedArtifacts().collectEntries {
+		Map<String, CommerceDep> metaDataLookup = configPoms.resolvedConfiguration.getResolvedArtifacts().collectEntries {
 			def parsedPom = new groovy.xml.XmlSlurper().parse(it.file)
 			def path
 			parsedPom.properties."project.path".each {
@@ -103,13 +102,15 @@ class ResolverTask extends DefaultTask {
 			project.logger.info "Deleting $it.name ($it.path) as it is no more part of the dependencies"
 		}
 
-		dependencies << new JsonBuilder(pathLookUp).toPrettyString()
+		dependencyStore << new JsonBuilder(metaDataLookup).toPrettyString()
 		def fileLookUp = configZips.resolvedConfiguration.getResolvedArtifacts().collectEntries { artifact ->
 			[artifact.id.componentIdentifier.toString(), artifact.file]
 		}
 
 		fileLookUp.entrySet().each { entry ->
-			def target = project.mkdir("hybris/bin/${pathLookUp.get(entry.key).path?: "thirdParty"}")
+
+			def metaData = metaDataLookup.get(entry.key)
+			def target = project.mkdir("hybris/bin/${metaData.path?: "thirdParty"}")
 			project.copy {
 				from project.zipTree(entry.value)
 				into target

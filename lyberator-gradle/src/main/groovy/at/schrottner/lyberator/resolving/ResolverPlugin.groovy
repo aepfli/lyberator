@@ -8,22 +8,21 @@ import org.gradle.api.attributes.Attribute
 import org.gradle.api.component.SoftwareComponentFactory
 import org.gradle.api.distribution.DistributionContainer
 import org.gradle.api.distribution.plugins.DistributionPlugin
-import org.gradle.api.initialization.Settings
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 
 import javax.inject.Inject
 
-class ResolverPlugin implements Plugin<Settings> {
+class ResolverPlugin implements Plugin<Project> {
 
 
 	@Override
-	void apply(Settings settings) {
-		def extension = settings.extensions.create(ResolverExtension.NAME, ResolverExtension)
+	void apply(Project project) {
+		def extension = project.extensions.create(ResolverExtension.NAME, ResolverExtension)
 
 
-		def config = settings.configurations.maybeCreate(ResolverExtension.CONFIGURATION_EXTENSION)
+		def config = project.configurations.maybeCreate(ResolverExtension.CONFIGURATION_EXTENSION)
 
 
 		def task = project.tasks.create("extractCommerce", ResolverTask, config, extension)

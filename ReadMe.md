@@ -9,6 +9,13 @@ First we extract the SAP Commerce zip and repackage it into separate extension w
 
 Second we are loading only our needed extensions via Gradle dependency mechanisms and place them back in the correct folder.
 
+## DISCLAIMER
+
+You have to evaluate on your own, if you want to temper with Software Package you do not own.
+This is just Prototype, a PoC showing the possibilities.
+
+I repeat, I am not telling you to use this, and all kind of alterations, modifications of Software Distributions is happening on your own risk.
+
 ## Repackaging
 
 First we unzip the SAP Commerce Distribution.
