@@ -16,6 +16,13 @@ This is just Prototype, a PoC showing the possibilities.
 
 I repeat, I am not telling you to use this, and all kind of alterations, modifications of Software Distributions is happening on your own risk.
 
+## Testing this PoC
+
+1. check it out.
+2. run `gradle publishToMavenLocal` - this will build the plugins etc
+3. repackage something with the `testing/extraction` project
+4. use the packaged resources see `testing/usage` project
+
 ## Repackaging
 
 First we unzip the SAP Commerce Distribution.
@@ -26,17 +33,28 @@ Furthermore, we use the `required-extensions` to define dependencies between the
 We create own gradle subprojects out of those extensions found, and publish them via maven.
 Additionally, we enrich the pom file with a custom attribute providing the path, for the extraction in the future.
 
+### Usage
+
+Take a look at `testing/extraction`. This is a ready to use gradle-plugin, you only need to define the zip file via the `target` variable.
+Either within `gradle.properties` or with `-Ptarget=`
+
 ## Using repackaged files
 
 As we are now able to reference the extensions within our build.gradle file, we are fetching those.
 Furthermore, we do fetch all dependencies based on the pom configurations.
 We use this information to create additional `zip`-extension dependencies to the same coordinates.
 
+```groovy
+dependencies {
+	commerceExtension "<coordinates>"
+}
+```
+
 ## TODOS
 
 ### Usage and definition of custom and third party libraries
 
-How can we programmatically differentiate between them. 
+How can we programmatically differentiate between them.
 This sounds like it is not needed, but as soon as you want to use this information for additional tooling, like spotless or sonarqube this is needed.
 
 ### define proper sourcesets and libs

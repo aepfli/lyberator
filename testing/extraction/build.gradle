@@ -10,10 +10,7 @@ subprojects {
 
 	publishing {
 		repositories {
-			maven {
-				url = "https://foo"
-				name "GitLab-NC"
-			}
+			// add a custom repository here for publishing
 		}
 	}
 }
