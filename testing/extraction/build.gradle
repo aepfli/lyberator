@@ -5,12 +5,44 @@
  * Learn more about Gradle by exploring our samples at https://docs.gradle.org/7.3.3/samples
  * This project uses @Incubating APIs which are subject to change.
  */
-subprojects {
+configure(subprojects.findAll {it.name != 'commerce-bom'}) {
 	apply plugin: "ExtensionLyberatorPlugin"
 
 	publishing {
 		repositories {
 			// add a custom repository here for publishing
+		}
+	}
+}
+
+project(":commerce-bom") {
+	apply plugin: "java-platform"
+	apply plugin: "maven-publish"
+
+	description = "SAP Commerce (Bill of Materials)"
+
+	dependencies {
+		constraints {
+			rootProject.subprojects
+					.findAll { it.name != project.name }
+					.forEach { api("${it.group}:${it.name}:${it.version}") }
+		}
+	}
+
+	publishing {
+		publications {
+			commerceBom(MavenPublication) {
+				from components.javaPlatform
+				pom {
+					description = "This Bill of Materials POM can be used to ease dependency management " +
+							"when referencing multiple SAP Commerce artifacts using Gradle or Maven."
+					withXml {
+						def filteredContent = asString().replaceAll(/\s*<scope>compile<\/scope>/, "")
+						asString().setLength(0)
+						asString().append(filteredContent)
+					}
+				}
+			}
 		}
 	}
 }

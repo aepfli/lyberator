@@ -5,6 +5,7 @@ import groovy.io.FileType
 import groovy.xml.XmlParser
 import org.gradle.api.Plugin
 import org.gradle.api.component.SoftwareComponentFactory
+import org.gradle.api.initialization.ProjectDescriptor
 import org.gradle.api.initialization.Settings
 
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class LyberatorPlugin implements Plugin<Settings> {
 		extension.target = settings.extensions.extraProperties.get("target")
 
 		def rootDir = settings.rootDir
-		def extractionPoint = new File("${rootDir}/${extension.extractionPoint}")
+		File extractionPoint = new File("${rootDir}/${extension.extractionPoint}")
 		if(!extractionPoint.exists() && extension.target) {
 			extractionPoint.mkdir()
 			def ant = new AntBuilder()
@@ -37,13 +38,14 @@ class LyberatorPlugin implements Plugin<Settings> {
 			)
 		}
 
+		def bomRoot = createBomProject(extractionPoint, settings)
 		FilenameFilter filter = (dir, name) -> name == LyberatorExtension.EXTENSION_XML
 		rootDir.traverse(type: FileType.DIRECTORIES) {
 			def projectName
 			if(it.listFiles(filter)) {
 				def extensioninfo = new XmlParser().parse("$it.absolutePath/$LyberatorExtension.EXTENSION_XML")
 				projectName = extensioninfo.extension[0].@name
-			} else if(it.path.endsWith("bin/platform")) {
+			} else if(it.path.endsWith("bin${File.separator}platform")) {
 				projectName = it.name
 			}
 
@@ -53,5 +55,17 @@ class LyberatorPlugin implements Plugin<Settings> {
 				p.projectDir = it
 			}
 		}
+	}
+
+	def createBomProject(File extractionPoint, Settings settings) {
+		def projectName = "commerce-bom"
+		def bomRoot = new File("$extractionPoint/$projectName")
+		bomRoot.mkdirs()
+
+		settings.include projectName
+
+		def p = settings.project(":${projectName}")
+		p.projectDir = bomRoot
+		return p
 	}
 }
