@@ -13,3 +13,10 @@ pluginManagement {
 	}
 }
 rootProject.name = 'testing-usage'
+
+/* TODO:
+- Iterate over local extensions, and create sub projects
+- parse extensionInfo.xml and add the dependencies to the sub project (evaluate if we can add them globally)
+-- we could even use the extensioninfo to determine all kind of extensions needed (but, we might have issues with differentiaten between, 3rdParty and commerce)
+- Still a two step start, extract, and add deps, see if missing extraction could be a problem
+ */

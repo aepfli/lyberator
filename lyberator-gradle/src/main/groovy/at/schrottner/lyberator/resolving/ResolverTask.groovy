@@ -23,7 +23,7 @@ class ResolverTask extends DefaultTask {
 	ResolverTask(config, extension) {
 		this.extension = extension
 		this.configuration = config
-		this.description = "extract all CommerceExtensions"
+		this.description = "extract all ${config.name}"
 		this.group = "Commerce Extensions"
 	}
 
@@ -38,15 +38,21 @@ class ResolverTask extends DefaultTask {
 			it.toString()
 		}
 	}
+
+	@Internal
+	def getExtensionName() {
+		configuration.name - "Extensions"
+	}
+
 	@OutputFile
 	def getDependencyStore() {
-		project.file("$project.buildDir/commerce/extensions.json")
+		project.file("$project.buildDir/commerce/${extensionName}.json")
 	}
 
 	@TaskAction
 	void performAction() {
-		def configPoms = project.configurations.maybeCreate(ResolverExtension.CONFIGURATION_EXTENSION_POMS)
-		def configZips = project.configurations.maybeCreate(ResolverExtension.CONFIGURATION_EXTENSION_ZIPS)
+		def configPoms = project.configurations.maybeCreate("${configuration.name}Poms")
+		def configZips = project.configurations.maybeCreate("${configuration.name}Zips")
 
 
 		configuration.resolvedConfiguration.lenientConfiguration.allModuleDependencies.each { dependency ->
@@ -98,7 +104,7 @@ class ResolverTask extends DefaultTask {
 		project.logger.info "Deleting unused extensions ${oldExt.entrySet().size()}"
 		// delete old dead extensions
 		oldExt.values().each {
-			project.delete("hybris/bin/${it.path?: "thirdParty"}")
+			project.delete("hybris/bin/${it.path?: "${extensionName}"}")
 			project.logger.info "Deleting $it.name ($it.path) as it is no more part of the dependencies"
 		}
 
@@ -110,7 +116,7 @@ class ResolverTask extends DefaultTask {
 		fileLookUp.entrySet().each { entry ->
 
 			def metaData = metaDataLookup.get(entry.key)
-			def target = project.mkdir("hybris/bin/${metaData.path?: "thirdParty"}")
+			def target = project.mkdir("hybris/bin/${metaData.path?: "${extensionName}"}")
 			project.copy {
 				from project.zipTree(entry.value)
 				into target

@@ -21,11 +21,12 @@ class ResolverPlugin implements Plugin<Project> {
 	void apply(Project project) {
 		def extension = project.extensions.create(ResolverExtension.NAME, ResolverExtension)
 
+		extension.extensionGroups.each {
+			def config = project.configurations.maybeCreate("${it}Extension")
 
-		def config = project.configurations.maybeCreate(ResolverExtension.CONFIGURATION_EXTENSION)
 
-
-		def task = project.tasks.create("extractCommerce", ResolverTask, config, extension)
+			def task = project.tasks.create("extract${it.capitalize()}Extensions", ResolverTask, config, extension)
+		}
 
 	}
 }
