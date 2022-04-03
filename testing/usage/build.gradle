@@ -21,9 +21,10 @@ repositories {
 }
 
 dependencies {
-	commerceExtension "de.hybris:npmancillary:2105.8"
-	commerceExtension "de.hybris.platform:adaptivesearchfacades:2105.8"
-	//commerceExtension "de.hybris.platform:apiregistryservices:2105.8"
-	commerceExtension "de.hybris.platform:adaptivesearchbackoffice:2105.8"
+	commerceExtension platform("de.hybris:bom:2105.8")
+	commerceExtension "de.hybris:npmancillary"
+	commerceExtension "de.hybris.platform:adaptivesearchfacades"
+	//commerceExtension "de.hybris.platform:apiregistryservices"
+	commerceExtension "de.hybris.platform:adaptivesearchbackoffice"
 }
 

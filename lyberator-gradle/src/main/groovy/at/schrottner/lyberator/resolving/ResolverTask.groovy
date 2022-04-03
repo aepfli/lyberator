@@ -51,7 +51,7 @@ class ResolverTask extends DefaultTask {
 
 		configuration.resolvedConfiguration.lenientConfiguration.allModuleDependencies.each { dependency ->
 
-			if(dependency.moduleArtifacts.every { it.file == null} ) {
+			if(dependency.moduleArtifacts.every { it.file == null} && dependency.resolvedConfigId.configuration == "commerce" ) {
 				project.logger.info "Evaluating dependency $dependency.name as we could not resolve a file, so we assume it is a Commerce Extension"
 				project.dependencies {
 					"${configPoms.name}"(

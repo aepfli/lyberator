@@ -20,6 +20,7 @@ project(":commerce-bom") {
 	apply plugin: "maven-publish"
 
 	description = "SAP Commerce (Bill of Materials)"
+	group = "de.hybris"
 
 	dependencies {
 		constraints {
@@ -33,6 +34,7 @@ project(":commerce-bom") {
 		publications {
 			commerceBom(MavenPublication) {
 				from components.javaPlatform
+				artifactId = "bom"
 				pom {
 					description = "This Bill of Materials POM can be used to ease dependency management " +
 							"when referencing multiple SAP Commerce artifacts using Gradle or Maven."
